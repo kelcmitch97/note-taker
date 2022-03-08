@@ -1,15 +1,16 @@
 {
   "dependencies": {
-    "express": "^4.17.3"
+    "express": "^4.17.3",
+    "nodemon": "^2.0.15"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "devStart": "nodemon server.js"
   },
   "name": "11-note-taker",
   "description": "## Your Task",
   "version": "1.0.0",
   "main": "server.js",
-  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kelcmitch97/note-taker.git"
