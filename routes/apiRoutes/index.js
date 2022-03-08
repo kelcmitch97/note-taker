@@ -11,8 +11,10 @@ router.get('/notes', (req, res) => {
 });
 
 router.post('/notes', (req, res) => {
-    console.log(req.body);
-    res.json(req.body);
+    req.body.id = notes.length.toString();
+
+    const note = saveNote(req.body, notes);
+    res.json(note);
 });
 
 module.exports = router;
