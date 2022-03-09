@@ -21,23 +21,38 @@ app.post('/api/notes', (req, res) => {
 
 // Reading database and showing saved notes
 const showNote = (res) => {
-    const data = readFromFile();
+    const data = readFromDB();
     res.send(data);
 };
-const readFromFile = () => {
+const readFromDB = () => {
     let note = fs.readFileSync('./db/db.json', 'utf-8');
     return note = JSON.parse(note);
 };
 
-
-
-
-
-
-
-
-
-
+// Saving new note to database
+const saveNewNote = (newNote, res) => {
+    const data = readFromDB();
+    data.push(newNote);
+    writeToFile(data, res);
+};
+const writeToFile = (data, res) => {
+    data = addUniqueId(data);
+    data = JSON.stringify(data);
+    fs.writeFile('./db/db.json', data, (err) => {
+        if (err) {
+            throw err;
+        } else {
+            res.send("New Note was saved successfully!");
+        }
+    });
+};
+const addUniqueId = (data) => {
+    var id = 1;
+    data.forEach(element => {
+        element["id"] = id++;
+    });
+    return data;
+};
 
 
 // HTML Routes
