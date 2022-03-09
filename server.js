@@ -1,3 +1,5 @@
+const { notStrictEqual } = require('assert');
+const { response } = require('express');
 const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -18,6 +20,41 @@ app.get('/api/notes', (req, res) => {
 app.post('/api/notes', (req, res) => {
     saveNewNote(req.body, res);
 });
+
+app.delete('/api/notes/:id', (req, res) => {
+    let id = req.params.id;
+    const note = showNote(res);
+
+    const findNoteId = (note, id) => {
+        for (let i = 0; i < note.length; i++) {
+            if (note[i].id === parseInt(id)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    fs.readFile('./db/db.json', 'utf-8', (err, data) => {
+        if (err) {
+            return response.status(500).send("Sorry, something went wrong");
+        }
+
+        let notes = JSON.parse(data);
+        const notesIndex = findNoteId(note, id);
+
+        if(notesIndex === -1) {
+            return response.status(404).send("sorry, ID not found");
+        }
+
+        notes[notesIndex].complete = true;
+
+        notes.splice(notesIndex, 1);
+
+        fs.writeFile('./db/db.json', JSON.stringify(notes), () => {
+            return response.json( {'status': 'Deleted ID' + id});
+        })
+    })
+})
 
 // Reading database and showing saved notes
 const showNote = (res) => {
@@ -53,6 +90,8 @@ const addUniqueId = (data) => {
     });
     return data;
 };
+
+// Deleting notes 
 
 
 // HTML Routes
