@@ -1,11 +1,12 @@
-const { notStrictEqual } = require('assert');
-const { response } = require('express');
 const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3001;
 // Modules
 const fs = require('fs');
 const path = require('path');
+const { v4: uuidv4 } = require('uuid');
+
+console.log(uuidv4());
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
