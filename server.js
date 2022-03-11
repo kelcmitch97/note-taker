@@ -23,39 +23,14 @@ app.post('/api/notes', (req, res) => {
 
 // Route to delete notes based on ID 
 app.delete('/api/notes/:id', (req, res) => {
-    let id = req.params.id;
-    const note = showNote(res);
+    let data = readFromDB();
+    let noteID = (req.params.id).toString();
 
-    const findNoteId = (note, id) => {
-        for (let i = 0; i < note.length; i++) {
-            if (note[i].id === parseInt(id)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    fs.readFile('./db/db.json', 'utf-8', (err, data) => {
-        if (err) {
-            return response.status(500).send("Sorry, something went wrong");
-        }
-
-        let notes = JSON.parse(data);
-        const notesIndex = findNoteId(note, id);
-
-        if(notesIndex === -1) {
-            return response.status(404).send("sorry, ID not found");
-        }
-
-        notes[notesIndex].complete = true;
-
-        notes.splice(notesIndex, 1);
-
-        fs.writeFile('./db/db.json', JSON.stringify(notes), () => {
-            return response.json( {'status': 'Deleted ID' + id});
-        })
+    data = data.filter(selected => {
+        return selected.id != noteID;
     })
-})
+    writeToFile(data, res);
+});
 
 // Reading database and showing saved notes
 const showNote = (res) => {
@@ -88,9 +63,6 @@ const writeToFile = (data, res) => {
         }
     });
 };
-
-// Deleting notes 
-
 
 // HTML Routes
 app.get('/notes', (req, res) => {
